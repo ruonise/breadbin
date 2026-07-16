@@ -1,0 +1,53 @@
+{% extends "layout.html" %} {% block content %}
+<head>
+    <title>miaw — audit logs</title>
+</head>
+
+<div class="container white pad_20 large flex_col gap_20">
+    <h1>audit logs</h1>
+    {% for log in logs %}
+    <div class="container width flex gap_10 pad_20 word">
+{% if log.actor.profile_picture %}
+           <img
+                    src="{{  url_for('static', filename='profile_pics/' + log.actor.profile_picture) }}"
+                    title="{{ user.username }}'s profile picture"
+                    class="pfp-3"
+                />
+{% else %}
+
+                <img
+                    src="{{  url_for('static', filename='default_pfp.webp') }}"
+                    title="{{ user.username }}'s profile picture"
+                    class="pfp-3"
+                />
+{% endif %}
+
+
+        <div class="flex_col">
+            <a
+                href="{% if log.actor %}{{ url_for('user.profile', username=log.actor.username) }}{% else %}#{% endif %}"
+            >
+                {% if log.actor %} {{ log.actor.username }} ({{ log.actor.id }})
+                {% else %} system{% endif %}
+            </a>
+
+            <div>
+                did event
+                <b>{{ log.event }}</b>
+                to
+                <a
+                    href="{% if log.target_user %}{{ url_for('user.profile', username=log.target_user.username) }}{% else %}#{% endif %}"
+                >
+                    {% if log.target_user %} {{ log.target_user.username }} ({{
+                    log.target_user.id }}) {% elif log.target_type and
+                    log.target_id %} {{ log.target_type }}: {{ log.target_id }}
+                    {% else %} {{ log.ip_address }} {% endif %}
+                </a>
+            </div>
+
+            <small class="top_70"> at {{ log.created_at }} </small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

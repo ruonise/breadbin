@@ -1,0 +1,59 @@
+{% extends "layout.html" %}{% block content %}
+<body>
+    <div class="container large">
+        <h1>ip manager</h1>
+        <div class="pad_20">
+            <div class="flex gap_20">
+                <input id="ipInput" type="text" placeholder="{{ enter_ip }}" />
+                <button class="ban" onclick="banIP()">ban</button>
+            </div>
+
+            <hr class="top_20" style="opacity: 0.2" />
+
+            <div class="flex_col width">
+                {% for ip in banned_ips %}
+                <div class="container flex justify">
+                    <div>{{ ip.ip_address }}</div>
+
+                    <form
+                        method="POST"
+                        action="/admin/ip/{{ ip.ip_address }}/unban"
+                    >
+                     <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                />
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        />
+                        <button class="unban" type="submit">unban</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const csrfToken = "{{ csrf_token() }}";
+
+        function banIP() {
+            let ip = document.getElementById("ipInput").value.trim();
+
+            let form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/admin/ip/" + encodeURIComponent(ip) + "/ban";
+
+            form.innerHTML = `
+                <input type="hidden" name="csrf_token" value="${csrfToken}">
+            `;
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+{% endblock %}

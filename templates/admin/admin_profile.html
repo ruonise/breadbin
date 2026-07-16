@@ -1,0 +1,227 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<head>
+    <title>miaw — manage {{ owner.username }}</title>
+</head>
+
+<div class="flex_col width align center text">
+    <div class="width flex align center text">
+        <div class="medium pad_20 text">
+            {% if owner.profile_picture %}
+            <img
+                id="pfp"
+                src="{{ url_for('static', filename='profile_pics/' + owner.profile_picture) }}"
+            />
+            {% else %}
+            <img
+                src="{{ url_for('static', filename='default_pfp.webp') }}"
+                title="{{ user.username }}'s profile picture"
+                id="pfp"
+            />
+            {% endif %}
+
+            <div class="flex_col width">
+                <div class="container pad_5 flex_col gap_10">
+                    <div>
+                        <h3>@{{ owner.username }}</h3>
+                        <small>{{ owner.id }}</small>
+                    </div>
+
+                    <div>
+                        {% if owner.bio %}
+                        <p>{{ owner.bio | safe }}</p>
+                        {% else %}
+                        <p>nothing yet</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="container top_20">
+                <div class="head green">admin actions</div>
+
+                <div class="pad_20 text align center flex_col">
+
+                    <div class="bottom_20 flex_col gap_10 justify width">
+                        {% for ip in ip_logs.items %}
+
+                        <div class="flex align justify gap_5 width">
+                            {{ ip.ip_address }}
+
+                            {% if ip.ip_address in banned_ips %}
+                                banned
+
+                                <form
+                                    method="post"
+                                    action="{{ url_for('admin.unban_ip', ip_address=ip.ip_address) }}"
+                                    style="display:inline"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    />
+                                    <button class="blue" type="submit">
+                                        unban ip
+                                    </button>
+                                </form>
+
+                            {% else %}
+
+                                not banned
+
+                                <form
+                                    method="post"
+                                    action="{{ url_for('admin.ban_ip', ip_address=ip.ip_address) }}"
+                                    style="display:inline"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    />
+                                    <button class="blue" type="submit">
+                                        ban ip
+                                    </button>
+                                </form>
+
+                            {% endif %}
+                        </div>
+
+                        {% endfor %}
+                    </div>
+
+                    <div class="flex gap_10 justify center pad_10">
+                        {% if ip_logs.has_prev %}
+                        <a href="{{ url_for('admin.admin_profile', user_id=owner.id, page=ip_logs.prev_num) }}">
+                            <button>previous</button>
+                        </a>
+                        {% endif %}
+
+                        {% if ip_logs.has_next %}
+                        <a href="{{ url_for('admin.admin_profile', user_id=owner.id, page=ip_logs.next_num) }}">
+                            <button>next</button>
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="bottom_20 flex gap_20">
+                        <form method="POST" action="{{ url_for('admin.delete_account') }}">
+                            <input type="hidden" name="user_id" value="{{ owner.id }}">
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            />
+
+                            <button
+                                type="submit"
+                                onclick="return confirm('delete account?')"
+                            >
+                                delete account
+                            </button>
+                        </form>
+
+                        {% if owner.is_banned %}
+
+                        <form
+                            method="post"
+                            action="{{ url_for('admin.unban_user', user_id=owner.id) }}"
+                            style="display:inline"
+                        >
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            />
+                            <button class="yellow" type="submit">
+                                unban account
+                            </button>
+                        </form>
+
+                        {% else %}
+
+                        <form
+                            method="post"
+                            action="{{ url_for('admin.ban_user', user_id=owner.id) }}"
+                            style="display:inline"
+                        >
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            />
+                            <button class="yellow" type="submit">
+                                ban user
+                            </button>
+                        </form>
+
+                        {% endif %}
+                    </div>
+
+                    <div class="card_2 pad_10 flex_col gap_10 width">
+                        <form
+                            method="post"
+                            action="{{ url_for('admin.update_password', user_id=owner.id) }}"
+                            class="flex_col gap_10 width"
+                        >
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="new password"
+                                required
+                                class="width"
+                            />
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            />
+
+                            <button class="purple" type="submit">
+                                update password
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="container width flex_col gap_10">
+                known recent sessions
+
+                <div class="left pad_10 flex_col gap_10">
+                    {% for ip_log in ip_logs.items %}
+                        <button class="yellow">
+                            {{ ip_log.ip_address }}
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <div class="flex gap_10 justify center pad_10">
+                    {% if ip_logs.has_prev %}
+                    <a href="{{ url_for('admin.admin_profile', user_id=owner.id, page=ip_logs.prev_num) }}">
+                        <button>previous</button>
+                    </a>
+                    {% endif %}
+
+                    {% if ip_logs.has_next %}
+                    <a href="{{ url_for('admin.admin_profile', user_id=owner.id, page=ip_logs.next_num) }}">
+                        <button>next</button>
+                    </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('user.profile', username=owner.username) }}">
+        <button class="blue">back</button>
+    </a>
+</div>
+{% endblock %}

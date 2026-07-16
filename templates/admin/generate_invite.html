@@ -1,0 +1,23 @@
+{% extends "layout.html" %} {% block content %}
+
+<div class="container medium flex_col gap_20">
+    <form method="POST">
+         <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                />
+        <button type="submit">get me 1 invite pleaase</button>
+    </form>
+
+    {% if generated_code %}
+    <p>here u go!</p>
+        <input
+            type="text"
+            value="{{ generated_code }}"
+            readonly
+        >
+    {% endif %}
+</div>
+
+{% endblock %}
