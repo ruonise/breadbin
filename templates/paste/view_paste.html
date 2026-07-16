@@ -1,0 +1,67 @@
+{% extends "layout.html" %} {% block content %}
+<head>
+    {% if paste.meta_description %}
+    <meta name="description" content="{{ paste.meta_description }}" />
+    {% else %}
+    <meta
+        property="og:description"
+        content="{{ paste.content|truncate(150) }}"
+    />
+    {% endif %} {% if paste.favicon_url %}
+    <link
+        rel="icon"
+        href="{{ paste.favicon_url or url_for('static', filename='favicon.ico') }}"
+    />
+    {% endif %} {% if paste.meta_image %}
+    <meta property="og:image" content="{{ paste.meta_image }}" />
+    {% else %}
+    <meta
+        property="og:image"
+        content="{{ url_for('static', filename='favicon.webp') }}"
+    />
+    {% endif %} {% if paste.theme_color %}
+    <meta name="theme-color" content="{{ paste.theme_color }}" />
+    {% endif %}
+    <title>
+        {% block title %} {% if paste.page_title %} {{ paste.page_title }} {%
+        else %} {{ paste.id }} {% endif %} {% endblock %}
+    </title>
+</head>
+
+<div id="pageContent" class="large width">
+    <div class="container width">{{ safe_content|safe }}</div>
+    <div class="flex space">
+        <div>
+            <a href="{{ url_for('paste.edit_paste', paste_id=paste.id) }}"
+                ><button id="edit-button" class="btn">edit</button></a
+            >
+            {% if current_user.id == paste.user_id or current_user.is_admin %}
+            <a href="{{ url_for('paste.paste_extras', paste_id=paste.id) }}"
+                ><button id="extras-button" class="btn">extras</button></a
+            >
+            {% endif %}
+        </div>
+        <div class="paste-stats">
+            <p id="published-at">
+                {% if published_at %} pub: {{ published_at | nice_date }} {%
+                else %} none tf {% endif %}
+            </p>
+            {% if last_edited_at %}
+            <p id="last-edited">edit: {{ last_edited_at | nice_date }}</p>
+            {% else %}
+            <p id="last-edited">edit: {{ published_at | nice_date }}</p>
+            {% endif %}
+            <p id="paste-owner">
+                owner:
+                <a
+                    href="{{ url_for('user.profile', username=paste.user.username) }}"
+                    >{{ paste.user.username }}</a
+                >
+            </p>
+            <p id="paste-views">views: {{ paste.views }}</p>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

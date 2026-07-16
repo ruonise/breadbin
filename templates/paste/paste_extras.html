@@ -1,0 +1,28 @@
+{% extends "layout.html" %} {% block content %}
+<div class="container medium">
+    <a href="{{ url_for('paste.edit_paste', paste_id=paste.id) }}">edit</a> ===
+    <a href="{{ url_for('paste.transfer_ownership', paste_id=paste.id) }}"
+        >transfer ownership</a
+    >
+    ===
+    <a href="{{ url_for('paste.update_paste_password', paste_id=paste.id) }}"
+        >set a password</a
+    >
+    <br />
+    <form
+        method="POST"
+        action="{{ url_for('paste.delete_paste', paste_id=paste.id) }}"
+        onsubmit="
+            return confirm('are you sure you want to delete this paste?');
+        "
+    >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button class="btn danger" type="submit">delete paste</button>
+    </form>
+    <p>
+        this is <b> a temporary hub for paste extras</b> that cannot be included
+        in the main layout. only admins and the owner of the paste can access
+        this page.
+    </p>
+</div>
+{% endblock %}

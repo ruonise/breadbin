@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<head>
+    <title>
+        {% block title %}
+            {% if paste.page_title %}
+                {{ paste.page_title }}
+            {% else %}
+                {{ paste.id }}
+            {% endif %}
+        {% endblock %}
+    </title>
+
+    {% if paste.favicon_url %}
+    <link
+        rel="icon"
+        href="{{ paste.favicon_url or url_for('static', filename='favicon.ico') }}"
+    />
+    {% endif %}
+</head>
+
+<div class="container large">
+    <form method="POST" action="{{ url_for('paste.edit_paste', paste_id=paste.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <label for="content">content</label><br />
+
+        <textarea
+            id="content"
+            name="content"
+            placeholder="your awesome code!"
+            required>{{ paste.content }}</textarea>
+
+        <div class="meta">
+            <div class="meta-content">
+                <input
+                    type="text"
+                    id="page_title"
+                    name="page_title"
+                    value="{{ paste.page_title }}"
+                    placeholder="page title here!"
+                />
+
+                <input
+                    type="text"
+                    id="meta_image"
+                    name="meta_image"
+                    value="{{ paste.meta_image }}"
+                    placeholder="meta image url here!"
+                />
+
+                <input
+                    type="text"
+                    id="theme_color"
+                    name="theme_color"
+                    value="{{ paste.theme_color }}"
+                    placeholder="meta desc theme color here!"
+                />
+            </div>
+
+            <div class="meta-content">
+                <input
+                    type="text"
+                    id="favicon_url"
+                    name="favicon_url"
+                    value="{{ paste.favicon_url }}"
+                    placeholder="favicon url here!"
+                />
+
+                <textarea
+                    id="meta_description"
+                    name="meta_description"
+                    placeholder="meta description here!"
+                >{{ paste.meta_description }}</textarea>
+            </div>
+        </div>
+
+        <div class="flex align justify">
+            {% if paste.user_id == current_user.id %}
+                <button type="submit">save changes</button>
+            {% else %}
+                <button type="submit" disabled>save changes</button>
+            {% endif %}
+
+            <a
+                href="{{ url_for('paste.view_paste', paste_id=paste.id) }}"
+            >
+                cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
