@@ -1,0 +1,31 @@
+{% extends "layout.html" %} {% block content %}
+
+<head>
+    <meta
+        property="og:description"
+        content="miaw.cc - a lightweight social pastebin"
+    />
+    <meta
+        property="og:image"
+        content="{{ url_for('static', filename='favicon.webp') }}"
+    />
+</head>
+
+<div class="container medium">
+    {% if error %}
+    <p>{{ error }}</p>
+    {% endif %}
+    <form method="post" class="width flex_col gap_10 align-flex_2">
+        <input type="text" name="username" placeholder="username" />
+        <input type="password" name="password" placeholder="password" />
+        <input
+            type="text"
+            name="invite_code"
+            placeholder="invite code"
+            required
+        />
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button class="btn" type="submit">register</button>
+    </form>
+</div>
+{% endblock %}

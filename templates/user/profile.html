@@ -1,0 +1,75 @@
+{% extends "layout.html" %} {% block content %}
+
+<!doctype html>
+<html>
+    <head>
+        <title>
+            {% block title %} {{ user.username }}'s profile {% endblock %}
+        </title>
+         {% if user.profile_picture %}
+ <meta
+            property="og:image"
+            content="{{ url_for('static', filename='profile_pics/' + user.profile_picture) }}"
+        />
+{% else %}
+ <meta
+            property="og:image"
+            content="{{ url_for('static', filename='default_pfp.webp') }}"
+        />
+{% endif %}
+        <meta property="og:title" content="{{ user.username }}'s profile" />
+        <meta property="og:description" content="{{ user.bio }}" />
+        {% if user.custom_css %}
+        <style>
+            {{ user.custom_css|safe }}
+        </style>
+        {% endif %}
+    </head>
+    <body>
+        <div class="container medium">
+            <h2>
+                {% if current_user.username == user.username %} your {% else %}
+                {{ user.username }}'s {% endif %} profile
+            </h2>
+            <div class="mobile flex">
+                {% if user.profile_picture %}
+   <img
+                    src="{{ url_for('static', filename='profile_pics/' + user.profile_picture) }}"
+                    title="{{ user.username }}'s profile picture"
+                    id="pfp"
+                />
+{% else %}
+
+                <img
+                    src="{{  url_for('static', filename='default_pfp.webp') }}"
+                    title="{{ user.username }}'s profile picture"
+                    id="pfp"
+                />
+{% endif %}
+                <div class="bio">
+                    {% if user.bio %}{{ sanitize_content(user.bio) | safe }} {%
+                    else %} no bio set! {% endif %}
+                </div>
+            </div>
+            <br />
+            <div class="flex gap_10 justify-end">
+                {% if current_user.username == user.username %}
+                <a
+                    href="{{ url_for('user.edit_profile', username=user.username) }}"
+                >
+                    <button class="btn">edit profile</button></a
+                >
+                            {% endif %} 
+                {% if current_user.is_admin %}
+                <a
+                    class="button-2"
+                    href="{{ url_for('admin.admin_profile', user_id=user.id) }}"
+                >
+                    <button class="blue">admin</button>
+                </a>
+                {% endif %}
+            </div>
+{% endblock %}
+        </div>
+    </body>
+</html>

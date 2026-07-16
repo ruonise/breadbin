@@ -1,0 +1,60 @@
+{% extends "layout.html" %} {% block content %}
+        <div class="container medium">
+            <div class="mobile flex">
+                {% if user.profile_picture %}
+                <img
+                    src="{{ url_for('static', filename='profile_pics/' + user.profile_picture)  }}"
+                    title="{{ user.username }}'s profile picture"
+                    id="pfp"
+                />
+{% else %}
+                <img
+                    src="{{ url_for('static', filename='default_pfp.webp') }}"
+                    title="{{ user.username }}'s profile picture"
+                    id="pfp"
+                />
+{% endif %}
+                <form method="POST" enctype="multipart/form-data" class="flex_col width gap_10">
+                    <input class="width" type="text" id="username" name="username" placeholder="username" value="{{ user.username }}">
+                    <textarea name="bio" placeholder="nothing here yet!" id="bio">{{ user.bio }}</textarea>
+            </div>
+            <div class="flex align gap_20 space">
+            <input
+                type="file"
+                name="profile_picture"
+                id="profile_picture"
+            />
+            <button class="btn" type="submit">save changes</button>
+            </div>
+
+
+            <label for="custom_css">custom css</label>
+            <textarea
+                name="custom_css"
+                id="custom_css"
+                rows="5"
+                cols="30"
+                placeholder="enter your custom CSS here..."
+            >{{ user.custom_css }}</textarea><br /><br />
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            />
+
+        </form>
+        <div class="flex space">
+        <a href="{{ url_for('user.profile', username=user.username) }}"
+            ><button class="btn">back to profile</button></a
+        >
+<div>
+    <a href="{{ url_for('user.delete_account', username=user.username) }}"
+        ><button class="btn danger">delete account</button></a
+    >
+        <a href="{{ url_for('user.change_password', username=user.username) }}"
+            ><button class="btn danger">change password</button></a
+        >
+</div>
+        </div>
+        </div>
+{% endblock %}

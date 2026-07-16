@@ -1,0 +1,64 @@
+{% extends "layout.html" %} {% block content %}
+<head>
+    <meta
+        property="og:description"
+        content="miaw.cc - a lightweight social pastebin"
+    />
+    <meta
+        property="og:image"
+        content="{{ url_for('static', filename='favicon.webp') }}"
+    />
+</head>
+<body>
+    <div class="container largeish">
+        <form
+            class="txt flex gap_10"
+            method="get"
+            action="{{ url_for('paste.dashboard') }}"
+        >
+            <input
+                type="text"
+                name="search"
+                placeholder="search..."
+                value="{{ search }}"
+            />
+            <button class="btn" type="submit">search</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        </form>
+
+        {% if pastes %} {% for paste in pastes %}
+        <a
+            class="paste-link"
+            href="{{ url_for('paste.view_paste', paste_id=paste.id) }}"
+        >
+            <div class="paste-card">
+                <h3>{{ url_for('paste.view_paste', paste_id=paste.id) }}</h3>
+                <span
+                    >{{ paste.content[:150] }}{% if paste.content|length > 100
+                    %}...{% endif %}</span
+                >
+            </div></a
+        >
+        {% endfor %} {% else %}
+        <div style="text-align: center">no pastes yet!</div>
+        {% endif %}
+    </div>
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="{{ url_for('paste.dashboard', page=page-1, search=search) }}"
+            >previous</a
+        >
+        {% endif %} {% for p in range(1, total_pages + 1) %} {% if p == page %}
+        <span class="current">{{ p }}</span>
+        {% else %}
+        <a href="{{ url_for('paste.dashboard', page=p, search=search) }}"
+            >{{ p }}</a
+        >
+        {% endif %} {% endfor %} {% if (page * per_page) < total %}
+        <a href="{{ url_for('paste.dashboard', page=page+1, search=search) }}"
+            >next</a
+        >
+        {% endif %}
+    </div>
+    {% endblock %}
+</body>
