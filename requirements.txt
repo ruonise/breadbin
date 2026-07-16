@@ -6,3 +6,4 @@ pillow
 bleach
 tinycss2
 colorama
+gunicorn
