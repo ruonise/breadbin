@@ -1,0 +1,44 @@
+x decide on a domain name
+x admin panel
+x ip logging
+x account deletion
+x csrf token
+x html/css content and sanitization
+x invite codes
+x mod shit
+x profile an bio custom css
+x badges
+
+css shit
+x profile 
+x index 
+x dashboard 
+x edit profile 
+x view paste
+x login 
+x register
+x admin panel
+x all inv codes
+x badges (combine with users?)
+x gen'd invite
+x generate invite
+x invite codes
+x ip logs
+x admin pastes
+x user ip logs
+x admin/users
+
+x customizable meta content for pastes
+x adding a favicon / changing title too
+
+x password locking of urls
+x url limit per day
+x users being able to delete their accounts (duh)
+
+bugs:
+x dashboard fix
+x css sanitization needs to happen
+
+
+rework of backend to be more optimal in terms of future debugging of features (split up into routes and models)
+rework of css to use helpers and be overall more flexible
