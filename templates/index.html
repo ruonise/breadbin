@@ -1,0 +1,55 @@
+<head>
+    <meta
+        property="og:description"
+        content="miaw.cc - a lightweight social pastebin"
+    />
+    <meta
+        property="og:image"
+        content="{{ url_for('static', filename='favicon.webp') }}"
+    />
+</head>
+
+<body>
+    <div id="content" class="width">
+        {% extends "layout.html" %} {% block content %}
+        <div class="container large">
+            <form id="pasteForm" method="post">
+                <textarea
+                    name="content"
+                    id="content"
+                    placeholder="enter your text here..."
+                    required
+                ></textarea
+                ><br />
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                />
+                <div class="flex justify">
+                    <input
+                        type="text"
+                        class="custom_id"
+                        name="custom_id"
+                        placeholder="custom url here!"
+                    />
+                    {% if current_user.is_authenticated %}
+                    <button class="btn" type="submit">create</button>
+                </div>
+            </form>
+            {% else %}
+            <p>
+                you need to <a href="{{ url_for('user.login') }}">log in</a> to
+                create a paste!
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    <div id="popup">
+        <p id="popup-message"></p>
+        <button class="btn" onclick="hidePopup()">close</button>
+    </div>
+</body>
+
+{% endblock %}
