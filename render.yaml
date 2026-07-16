@@ -1,0 +1,23 @@
+databases:
+  - name: mypaste-db
+    plan: free
+    databaseName: mypaste
+    user: mypaste_user
+
+services:
+  - type: web
+    name: mypaste
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 2 --timeout 120
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        value: admin@example.com
